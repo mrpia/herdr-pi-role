@@ -75,7 +75,9 @@ export async function here(pi, ctx) {
   if (ctx.mode !== 'tui' || !t) throw Error(NEEDS_HERDR);
   const [term, listing] = await Promise.all([jsonExec(pi, 'hc', ['get', t], ctx.cwd), jsonExec(pi, 'herdr-app', ['ls'], ctx.cwd)]);
   const s = term.labels?.['herdr.space'], tab = term.labels?.['herdr.tab'];
-  const matches = listing.spaces.filter(x => !x.machine && s && x.id === s).flatMap(x => x.tabs.filter(v => v.id === tab).flatMap(v => v.terminals.filter(p => p.terminal === t && p.pane)));
+  // A space on another machine (Pi in WSL, the app on Windows) lists ids as `<machine>/<id>`; hc labels omit the prefix.
+  const own = (id, machine, bare) => !!bare && id === (machine ? `${machine}/${bare}` : bare);
+  const matches = listing.spaces.filter(x => own(x.id, x.machine, s)).flatMap(x => x.tabs.filter(v => own(v.id, x.machine, tab)).flatMap(v => v.terminals.filter(p => own(p.terminal, x.machine, t) && p.pane)));
   if (term.address !== t || term.state !== 'live' || term.foreground?.pid !== process.pid || matches.length !== 1) throw Error('Cannot match this Pi process to exactly one local Herdr pane. No split was made.');
   return { pane: matches[0].pane, direction: term.cols < 88 && term.rows >= 26 ? 'down' : 'right' };
 }

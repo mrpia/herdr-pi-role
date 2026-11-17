@@ -116,7 +116,7 @@ A saved agent is a folder in your project, `agents/<name>/`, written and tested 
 - **"Project is not trusted. Use --approve"** when installing with `--local`: use the install line above (no `--local`), or add `--approve`.
 - **"/agent opens its pane with Herdr…"**: this Pi is not in a Herdr pane. Start Pi from a pane of the Herdr desktop app.
 - **"/agent could not run hc…"**: put Herdr's `hc` and `herdr-app` on your `PATH`.
-- **"Cannot match this Pi process to exactly one local Herdr pane"**: `hc get "$HC_TERMINAL_ID"` and `herdr-app ls` should name the same terminal and pane. The extension does not guess the focused pane.
+- **"Cannot match this Pi process to exactly one local Herdr pane"**: `hc get "$HC_TERMINAL_ID"` and `herdr-app ls` should name the same terminal and pane. The extension does not guess the focused pane. When Pi runs on another machine of the app (Pi in WSL, the Herdr app on Windows), `herdr-app` in that shell must be the app's own CLI (`herdr-app.exe`), and `herdr-app ls` shows the ids with a `<machine>/` prefix, which the match allows.
 - **No `/agent` in the slash menu:** run `/reload`, and check `pi list` shows this package once.
 - **The agent's status stays "opening":** look in the new pane for a trust question or a model error. After 90 seconds Main says the agent never connected.
 - **"… needs a "## Job" section":** `agents/<name>/agent.md` exists but has no text under `## Job`.
